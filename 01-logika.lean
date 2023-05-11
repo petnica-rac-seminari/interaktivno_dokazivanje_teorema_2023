@@ -29,6 +29,7 @@ example : ¬(p ∨ q) ↔ ¬p ∧ ¬q :=
 example : ¬p ∨ ¬q → ¬(p ∧ q) :=
   sorry
 
+-- Zakon neprotivrečnosti
 example : ¬(p ∧ ¬p) :=
   sorry
 
@@ -82,4 +83,30 @@ example : p ∨ ¬p :=
   sorry
 
 example : (((p → q) → p) → p) :=
+  sorry
+
+------------------------------ Logika prvog reda -------------------------------
+
+variable (p q : α → Prop)
+
+example {α : Type} {φ : α → Prop} : (∀ x : α, φ x) ↔ (¬ ∃ x : α, ¬ φ x) :=
+  sorry
+
+example {α : Type} {φ : α → Prop} : (∃ x : α, φ x) ↔ ¬(∀ x : α, ¬ φ x) :=
+  sorry
+
+example : (∀ x, p x ∧ q x) ↔ (∀ x, p x) ∧ (∀ x, q x) :=
+  sorry
+
+example : (∀ x, p x → q x) → (∀ x, p x) → (∀ x, q x) :=
+  sorry
+
+example : (∀ x, p x) ∨ (∀ x, q x) → ∀ x, p x ∨ q x :=
+  sorry
+
+example : (∀ x, r → p x) ↔ (r → ∀ x, p x) :=
+  sorry
+
+example {road : Type} {toRome : road → Prop} :
+    ¬ ∀ r : road, toRome r → ∃ r : road, ¬ toRome r :=
   sorry
