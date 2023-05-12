@@ -92,9 +92,6 @@ def sum_first_n : Nat → Nat
 | 0 => 0
 | Nat.succ k => (Nat.succ k) + sum_first_n k
 
-theorem mul_dvd {n k : Nat} : k ≥ 1 → n = n * k / k := by
-  sorry
-
 theorem gauss {n : Nat} : sum_first_n n = n * (n + 1) / 2 := by
   induction n with
   | zero => rfl
@@ -134,3 +131,54 @@ theorem gauss2_5 {n : Nat} : 2 * sum_first_n n = n * (n + 1) := by
                                  _ = (2 + k) * (k + 1)                      := by rw [Nat.right_distrib]
                                  _ = (k + 1) * (2 + k)                      := by rw [Nat.mul_comm]
                                  _ = (k + 1) * (k + 2)                      := by simp only [Nat.add_comm]
+
+example : p ∨ q ↔ q ∨ p :=
+  have ltr : p ∨ q → q ∨ p :=
+    λ hpq : p ∨ q => by
+      cases hpq with
+      | inl hp => exact Or.inr hp
+      | inr hq => exact Or.inl hq
+  have rtl : q ∨ p → p ∨ q :=
+    λ hqp : q ∨ p => by 
+      cases hqp with
+      | inl hq => exact Or.inr hq
+      | inr hp => exact Or.inl hp
+  Iff.intro ltr rtl
+
+#check absurd
+
+example {hp : p} {hnp : ¬p} : Nat :=
+  absurd hp hnp
+
+example : ¬(p ∨ q) ↔ ¬p ∧ ¬q :=
+  have ltr : ¬(p ∨ q) → ¬p ∧ ¬q :=
+    fun h : ¬(p ∨ q) =>
+      have hnp : ¬p := (fun hp : p => h (Or.inl hp))
+      have hnq : ¬q := (fun hq : q => h (Or.inr hq))
+      And.intro hnp hnq
+  have rtl : ¬p ∧ ¬q → ¬(p ∨ q) :=
+    fun h : ¬p ∧ ¬q =>
+      fun h₁ : p ∨ q =>
+        Or.elim h₁
+          (fun hp : p => h.left hp)
+          (fun hq : q => h.right hq)
+  Iff.intro ltr rtl
+
+-- excluded middle
+#check Classical.em
+
+example : ¬(p ∧ q) ↔ ¬p ∨ ¬q :=
+  have ltr : ¬(p ∧ q) → ¬p ∨ ¬q :=
+    fun h : ¬(p ∧ q) =>
+      Or.elim (Classical.em p)
+        (fun hp : p =>
+          have hnq : ¬q := fun hq : q => h (And.intro hp hq)
+          Or.inr hnq)
+        (fun hnp : ¬p => Or.inl hnp)
+  have rtl : ¬p ∨ ¬q → ¬(p ∧ q) :=
+    fun h : ¬p ∨ ¬q =>
+      fun h₁ : p ∧ q =>
+        Or.elim h
+          (fun hnp : ¬p => hnp h₁.left)
+          (fun hnq : ¬q => hnq h₁.right)
+  Iff.intro ltr rtl
